@@ -6,6 +6,8 @@ const dataFile = path.join(__dirname + '/data.json');
 const app = express(); 
 
 let PORT = process.env.PORT || 3000; 
+let ENV = process.env.NODE_ENV;
+console.log(ENV);
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname + '/index.html'));
@@ -27,9 +29,10 @@ app.get('/route?', (req, res) => {
       const dataObject = JSON.parse(data.toString('utf8'));
       let { count, urls } = dataObject; 
 
-      let localport = process.env.NODE_ENV === undefined ? 3000 : undefined;
-  
-      const shortUrl = `http://${req.hostname}:${localport}/mini/${count++}`;
+      const shortUrl = (ENV === 'development') ?
+         `http://${req.hostname}:${port}/mini/${count++}`:
+         `https://arwl-minurl.herokuapp.com/mini/${count++}`;
+        
       const newRecord = { 
         originalUrl: url, 
         shortUrl: shortUrl
